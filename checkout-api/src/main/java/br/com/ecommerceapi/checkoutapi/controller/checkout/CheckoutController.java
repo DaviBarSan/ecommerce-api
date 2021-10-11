@@ -1,5 +1,6 @@
 package br.com.ecommerceapi.checkoutapi.controller.checkout;
 
+import br.com.ecommerceapi.checkoutapi.service.CheckoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CheckoutController {
 
+    //Once the interface is implemented by CheckoutServicesImpl, Spring wired this functionalities.
+    //So, work with interface
+    private final CheckoutService checkoutService;
+
     @PostMapping("/")
     public ResponseEntity<Void> create(CheckoutRequest checkoutRequest){
+        checkoutService.create(checkoutRequest);
         return ResponseEntity.ok().build();
     }
 }
