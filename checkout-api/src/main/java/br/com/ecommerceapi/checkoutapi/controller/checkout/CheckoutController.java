@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CheckoutController {
 
     //Once the interface is implemented by CheckoutServicesImpl, Spring wired this functionalities.
-    //So, work with interface
+    //So work with interface wired to the bean 'service implementation' instead with the service
+    // class is a good pratice;
     private final CheckoutService checkoutService;
 
     @PostMapping("/")
