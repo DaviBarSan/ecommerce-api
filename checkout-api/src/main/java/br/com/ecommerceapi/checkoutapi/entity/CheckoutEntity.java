@@ -1,23 +1,22 @@
 package br.com.ecommerceapi.checkoutapi.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.apache.kafka.common.security.oauthbearer.OAuthBearerToken;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Data
+
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
     private String code;
-
 }
