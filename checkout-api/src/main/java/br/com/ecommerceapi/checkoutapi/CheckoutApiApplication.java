@@ -1,4 +1,4 @@
-package br.com.ecommerceapi.checkoutapi.streaming;
+package br.com.ecommerceapi.checkoutapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
