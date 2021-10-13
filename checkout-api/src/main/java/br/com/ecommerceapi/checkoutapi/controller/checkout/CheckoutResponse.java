@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//Works as a DTO, to do not expose entity data and just return the code attribute as response.
 public class CheckoutResponse {
     private String code;
 }

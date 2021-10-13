@@ -2,11 +2,12 @@ package br.com.ecommerceapi.checkoutapi.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-
+@Data
 @Entity
 @Builder
 @AllArgsConstructor
@@ -19,4 +20,13 @@ public class CheckoutEntity {
 
     @Column
     private String code;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public enum Status{
+        ACCEPTED,
+        CREATED
+    }
 }
