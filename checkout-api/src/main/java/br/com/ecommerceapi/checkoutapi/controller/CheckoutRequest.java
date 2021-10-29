@@ -1,4 +1,4 @@
-package br.com.ecommerceapi.checkoutapi.controller.checkout;
+package br.com.ecommerceapi.checkoutapi.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

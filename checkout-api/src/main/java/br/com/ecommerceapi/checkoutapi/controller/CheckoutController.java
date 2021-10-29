@@ -1,4 +1,4 @@
-package br.com.ecommerceapi.checkoutapi.controller.checkout;
+package br.com.ecommerceapi.checkoutapi.controller;
 
 import br.com.ecommerceapi.checkoutapi.service.CheckoutService;
 import lombok.RequiredArgsConstructor;

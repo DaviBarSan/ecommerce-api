@@ -1,14 +1,14 @@
 package br.com.ecommerceapi.checkoutapi.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutEntity {
@@ -19,4 +19,7 @@ public class CheckoutEntity {
 
     @Column
     private String code;
+
+    @Column
+    private String status;
 }
