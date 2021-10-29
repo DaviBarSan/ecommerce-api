@@ -5,11 +5,14 @@ import br.com.ecommerceapi.checkoutapi.controller.CheckoutRequest;
 import br.com.ecommerceapi.checkoutapi.entity.CheckoutEntity;
 import br.com.ecommerceapi.checkoutapi.event.CheckoutCreatedEvent;
 import br.com.ecommerceapi.checkoutapi.repository.CheckoutRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +26,21 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public Optional<CheckoutEntity> create(CheckoutRequest checkoutRequest) {
-
-        String checkoutCode = UUID.randomUUID().toString();
-        String status = "Accepted";
-
         final CheckoutEntity checkoutEntity = CheckoutEntity.builder()
-                .code(checkoutCode)
-                .status(status)
+                .code(UUID.randomUUID().toString())
+                .status("Accepted")
                 .build();
-
+        CheckoutCreatedEvent checkoutCreatedEvent = createdEventFromEntity(checkoutEntity);
+        checkoutProducerFactory.getCheckoutCreatedEventBlockingQueue().add(checkoutCreatedEvent);
         checkoutProducerFactory.checkoutCreated();
-
         return Optional.of(checkoutRepository.save(checkoutEntity));
+    }
+
+    private CheckoutCreatedEvent createdEventFromEntity(CheckoutEntity entity){
+        return CheckoutCreatedEvent.newBuilder()
+                .setCheckoutCode(entity.getCode())
+                .setStatus(entity.getStatus())
+                .build();
     }
 
 }

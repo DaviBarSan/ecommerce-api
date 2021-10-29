@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CheckoutRequest implements Serializable {
-
     private String firstName;
     private String lastName;
     private String email;
@@ -28,5 +27,4 @@ public class CheckoutRequest implements Serializable {
     private String cardDate;
     private String cardCvv;
     private List<String> products;
-
 }
