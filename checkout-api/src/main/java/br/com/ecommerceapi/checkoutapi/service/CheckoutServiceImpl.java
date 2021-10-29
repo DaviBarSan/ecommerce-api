@@ -28,7 +28,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     public Optional<CheckoutEntity> create(CheckoutRequest checkoutRequest) {
         final CheckoutEntity checkoutEntity = CheckoutEntity.builder()
                 .code(UUID.randomUUID().toString())
-                .status("Accepted")
+                .status(CheckoutEntity.Status.CREATED)
                 .build();
         CheckoutCreatedEvent checkoutCreatedEvent = createdEventFromEntity(checkoutEntity);
         checkoutProducerFactory.getCheckoutCreatedEventBlockingQueue().add(checkoutCreatedEvent);
@@ -39,7 +39,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     private CheckoutCreatedEvent createdEventFromEntity(CheckoutEntity entity){
         return CheckoutCreatedEvent.newBuilder()
                 .setCheckoutCode(entity.getCode())
-                .setStatus(entity.getStatus())
+                .setStatus(entity.getStatus().toString())
                 .build();
     }
 
