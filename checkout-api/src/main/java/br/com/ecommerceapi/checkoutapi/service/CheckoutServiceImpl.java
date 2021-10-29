@@ -3,16 +3,19 @@ package br.com.ecommerceapi.checkoutapi.service;
 import br.com.ecommerceapi.checkoutapi.config.CheckoutProducerFactory;
 import br.com.ecommerceapi.checkoutapi.controller.CheckoutRequest;
 import br.com.ecommerceapi.checkoutapi.entity.CheckoutEntity;
+import br.com.ecommerceapi.checkoutapi.entity.CheckoutItemEntity;
+import br.com.ecommerceapi.checkoutapi.entity.ShippingEntity;
 import br.com.ecommerceapi.checkoutapi.event.CheckoutCreatedEvent;
+import br.com.ecommerceapi.checkoutapi.repository.CheckoutItemRepository;
 import br.com.ecommerceapi.checkoutapi.repository.CheckoutRepository;
-import lombok.Getter;
+import br.com.ecommerceapi.checkoutapi.repository.ShippingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,27 +23,48 @@ import java.util.concurrent.LinkedBlockingQueue;
 // automatically wired;
 public class CheckoutServiceImpl implements CheckoutService {
 
-
+    private final ShippingRepository shippingRepository;
+    private final CheckoutItemRepository checkoutItemRepository;
     private final CheckoutRepository checkoutRepository;
     private final CheckoutProducerFactory checkoutProducerFactory;
 
     @Override
     public Optional<CheckoutEntity> create(CheckoutRequest checkoutRequest) {
-        final CheckoutEntity checkoutEntity = CheckoutEntity.builder()
-                .code(UUID.randomUUID().toString())
-                .status(CheckoutEntity.Status.CREATED)
-                .build();
-        CheckoutCreatedEvent checkoutCreatedEvent = createdEventFromEntity(checkoutEntity);
+        final CheckoutEntity checkoutEntity = createEntityFromRequest(checkoutRequest);
+        CheckoutCreatedEvent checkoutCreatedEvent = createEventFromEntity(checkoutEntity);
         checkoutProducerFactory.getCheckoutCreatedEventBlockingQueue().add(checkoutCreatedEvent);
         checkoutProducerFactory.checkoutCreated();
         return Optional.of(checkoutRepository.save(checkoutEntity));
     }
 
-    private CheckoutCreatedEvent createdEventFromEntity(CheckoutEntity entity){
+    private CheckoutCreatedEvent createEventFromEntity(CheckoutEntity entity){
         return CheckoutCreatedEvent.newBuilder()
                 .setCheckoutCode(entity.getCode())
                 .setStatus(entity.getStatus().toString())
                 .build();
     }
 
+    private CheckoutEntity createEntityFromRequest(CheckoutRequest checkoutRequest){
+        final CheckoutEntity checkoutEntity = CheckoutEntity.builder()
+                .code(UUID.randomUUID().toString())
+                .status(CheckoutEntity.Status.CREATED)
+                .saveAddress(checkoutRequest.getSaveAddress())
+                .saveInformation(checkoutRequest.getSaveInfo())
+                .shipping(ShippingEntity.builder()
+                        .address(checkoutRequest.getAddress())
+                        .complement(checkoutRequest.getComplement())
+                        .country(checkoutRequest.getCountry())
+                        .state(checkoutRequest.getState())
+                        .cep(checkoutRequest.getCep())
+                        .build())
+                .build();
+        checkoutEntity.setItems(checkoutRequest.getProducts()
+                .stream()
+                .map(product -> CheckoutItemEntity.builder()
+                        .checkoutEntity(checkoutEntity)
+                        .product(product)
+                        .build())
+                .collect(Collectors.toList()));
+        return checkoutEntity;
+    }
 }

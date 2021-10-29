@@ -1,9 +1,16 @@
 package br.com.ecommerceapi.checkoutapi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Table(name = "shipping_entity")
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ShippingEntity {
     @Id
     @GeneratedValue

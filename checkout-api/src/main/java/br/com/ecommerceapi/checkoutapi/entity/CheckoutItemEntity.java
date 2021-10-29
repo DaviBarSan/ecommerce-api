@@ -1,7 +1,7 @@
 package br.com.ecommerceapi.checkoutapi.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
@@ -9,6 +9,9 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CheckoutItemEntity {
     @Id
     @GeneratedValue
@@ -17,6 +20,6 @@ public class CheckoutItemEntity {
     @Column
     private String product;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private CheckoutEntity checkoutEntity;
 }
