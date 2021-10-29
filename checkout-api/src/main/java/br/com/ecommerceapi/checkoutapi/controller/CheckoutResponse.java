@@ -1,4 +1,4 @@
-package br.com.ecommerceapi.checkoutapi.controller.checkout;
+package br.com.ecommerceapi.checkoutapi.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//Works as a DTO, to do not expose entity data and just return the code attribute as response.
 public class CheckoutResponse {
     private String code;
 }

@@ -1,10 +1,11 @@
 package br.com.ecommerceapi.checkoutapi.service;
 
-import br.com.ecommerceapi.checkoutapi.controller.checkout.CheckoutRequest;
+import br.com.ecommerceapi.checkoutapi.config.CheckoutProducerFactory;
+import br.com.ecommerceapi.checkoutapi.controller.CheckoutRequest;
 import br.com.ecommerceapi.checkoutapi.entity.CheckoutEntity;
+import br.com.ecommerceapi.checkoutapi.event.CheckoutCreatedEvent;
 import br.com.ecommerceapi.checkoutapi.repository.CheckoutRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,13 +17,24 @@ import java.util.UUID;
 // automatically wired;
 public class CheckoutServiceImpl implements CheckoutService {
 
+
     private final CheckoutRepository checkoutRepository;
+    private final CheckoutProducerFactory checkoutProducerFactory;
 
     @Override
     public Optional<CheckoutEntity> create(CheckoutRequest checkoutRequest) {
+
+        String checkoutCode = UUID.randomUUID().toString();
+        String status = "Accepted";
+
         final CheckoutEntity checkoutEntity = CheckoutEntity.builder()
-                .code(UUID.randomUUID().toString())
+                .code(checkoutCode)
+                .status(status)
                 .build();
+
+        checkoutProducerFactory.checkoutCreated();
+
         return Optional.of(checkoutRepository.save(checkoutEntity));
     }
+
 }

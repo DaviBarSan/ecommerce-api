@@ -19,30 +19,36 @@ spring:
           lob:
             non_contextual_creation: true
   cloud:
+    schema-registry-client:
+      endpoint: http://localhost:8081
+      schema:
+        avro:
+          schema-locations: src/main/resources/avro/CheckoutCreated.avsc
     stream:
+      default-binder: kafka
+      function:
+        definition: checkoutCreated
       kafka:
         binder:
           autoCreateTopics: true
           brokers: localhost:9092
-          configuration:
-            value:
-              deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-              serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-            key:
-              deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-              serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+          producer-properties:
+            key.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            schema.registry.url: http://localhost:8081
+          consumer-properties:
+            key.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+            value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+            schema.registry.url: http://localhost:8081
+            specific.avro.reader: true
       bindings:
-        checkout-created-output:
+        checkoutCreated-out-0:
           destination: streaming.ecommerce.checkout.created
           contentType: application/*+avro
           producer:
+            configuration:
+              value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
             use-native-encoding: true
-        payment-paid-input:
-          destination: streaming.ecommerce.payment.paid
-          contentType: application/*+avro
-          group: ${spring.application.name}
-          consumer:
-            use-native-decoding: true
   kafka:
     properties:
       schema:
